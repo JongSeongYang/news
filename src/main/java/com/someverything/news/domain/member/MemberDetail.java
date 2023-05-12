@@ -47,7 +47,7 @@ public class MemberDetail {
     /** 개인정보 수정 일시 */
     private LocalDateTime infoUpdateDt;
 
-    /**  */
+    /** member_id(FK) */
     @OneToOne
     @JoinColumn(name = "member_id")
     private Member member;
