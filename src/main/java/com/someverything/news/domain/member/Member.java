@@ -1,5 +1,6 @@
 package com.someverything.news.domain.member;
 
+import com.someverything.news.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Data
-public class Member {
+public class Member extends BaseEntity {
     /** 회원 번호(PK) */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
