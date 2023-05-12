@@ -20,11 +20,6 @@ public class MemberDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** 회원 번호(FK) */
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
-
     /** 회원 명 */
     private String memberNm;
 
@@ -51,4 +46,9 @@ public class MemberDetail {
 
     /** 개인정보 수정 일시 */
     private LocalDateTime infoUpdateDt;
+
+    /**  */
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 }

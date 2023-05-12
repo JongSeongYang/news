@@ -77,6 +77,7 @@ public class Member {
     /** 약관 동의 항목 */
     private String termsAgreement;
 
+    /** Member_Detail 테이블 외래키 */
     @OneToOne(mappedBy = "member")
     private MemberDetail memberDetail;
 }
