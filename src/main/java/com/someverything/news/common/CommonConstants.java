@@ -1,2 +1,4 @@
-package com.someverything.news.common;public class CommonConstants {
+package com.someverything.news.common;
+
+public class CommonConstants {
 }
