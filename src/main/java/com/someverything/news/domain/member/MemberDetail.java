@@ -21,6 +21,11 @@ public class MemberDetail extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** member_id(FK) */
+    @OneToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     /** 회원 명 */
     private String memberNm;
 
@@ -47,9 +52,4 @@ public class MemberDetail extends BaseEntity {
 
     /** 개인정보 수정 일시 */
     private LocalDateTime infoUpdateDt;
-
-    /** member_id(FK) */
-    @OneToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
 }

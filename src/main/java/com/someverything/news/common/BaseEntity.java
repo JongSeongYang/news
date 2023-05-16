@@ -15,10 +15,12 @@ import java.time.LocalDateTime;
 @Getter
 public class BaseEntity {
 
+    /** 생성 일시 */
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdDt;
 
+    /** 수정 일시 */
     @LastModifiedDate
     private LocalDateTime updatedDt;
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "Member")
@@ -20,6 +21,14 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /** Member_Detail 테이블 */
+    @OneToOne(mappedBy = "member")
+    private MemberDetail memberDetail;
+
+    /** Auth_Code 테이블 */
+    @OneToMany(mappedBy = "member")
+    private List<AuthCode> authCodes;
 
     /** 닉네임 */
     private String nickname;
@@ -78,7 +87,4 @@ public class Member extends BaseEntity {
     /** 약관 동의 항목 */
     private String termsAgreement;
 
-    /** Member_Detail 테이블 외래키 */
-    @OneToOne(mappedBy = "member")
-    private MemberDetail memberDetail;
 }
