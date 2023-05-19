@@ -1,7 +1,7 @@
-package com.someverything.news.exception;
+package com.someverything.news.global.exception;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.someverything.news.utils.UtcZoneDateTimeSerializer;
+import com.someverything.news.global.utils.UtcZoneDateTimeSerializer;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;

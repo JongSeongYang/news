@@ -1,4 +1,4 @@
-package com.someverything.news.common;
+package com.someverything.news.global.common;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

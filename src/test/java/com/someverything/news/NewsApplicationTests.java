@@ -1,7 +1,7 @@
 package com.someverything.news;
 
-import com.someverything.news.domain.member.Member;
-import com.someverything.news.domain.member.MemberDetail;
+import com.someverything.news.domain.Member;
+import com.someverything.news.domain.MemberDetail;
 import com.someverything.news.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
