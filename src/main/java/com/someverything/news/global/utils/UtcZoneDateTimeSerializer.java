@@ -1,4 +1,4 @@
-package com.someverything.news.utils;
+package com.someverything.news.global.utils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
