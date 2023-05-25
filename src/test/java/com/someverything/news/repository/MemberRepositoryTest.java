@@ -37,4 +37,16 @@ class MemberRepositoryTest {
         Member save = memberRepository.save(me);
         assertEquals(save.getId(),1);
     }
+
+    @Test
+    void Member조회(){
+
+        Member me = Member.builder()
+                .nickname("석맨")
+                .password("1234")
+                .statusCode("01")
+                .build();
+        Member save = memberRepository.save(me);
+        assertEquals(save.getId(),1);
+    }
 }
