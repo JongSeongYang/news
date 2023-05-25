@@ -1,4 +1,4 @@
-package com.someverything.news.exception;
+package com.someverything.news.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.someverything.news.exception;
+package com.someverything.news.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

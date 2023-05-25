@@ -1,6 +1,6 @@
-package com.someverything.news.domain.member;
+package com.someverything.news.domain;
 
-import com.someverything.news.common.BaseEntity;
+import com.someverything.news.global.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
