@@ -21,13 +21,31 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'junit:junit:4.13.1'
 	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	// DB
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	runtimeOnly 'com.h2database:h2'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// modelMapper
+	implementation 'org.modelmapper:modelmapper:2.4.4'
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2', 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+	//okhttp
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
+	//apache
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+	// swagger
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 	// AOP
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	// logback
+	implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.9'
+	implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.9'
 }
 
 tasks.named('test') {
