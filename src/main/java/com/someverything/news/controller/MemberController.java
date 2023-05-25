@@ -1,4 +1,4 @@
-package com.someverything.news.api;
+package com.someverything.news.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
