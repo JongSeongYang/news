@@ -9,8 +9,7 @@ public class MemberDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @Getter
-    @Setter
+    @Data
     public static class MemberRequest {
         private String nickname;
         /** 토큰 */

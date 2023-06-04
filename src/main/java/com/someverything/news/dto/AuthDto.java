@@ -7,12 +7,11 @@ import java.time.LocalDateTime;
 public class AuthDto {
 
     @Builder
-    @NoArgsConstructor
     @AllArgsConstructor
-    @Getter
-    @Setter
+    @NoArgsConstructor
+    @Data
     public static class AuthRequest {
-
+        private String nickname;
     }
 
 
