@@ -12,6 +12,7 @@ public enum ExceptionCode {
 
     /* 10000  */
     EMAIL_NOT_FOUND(10001,"이메일이 존재하지 않습니다."),
+    INVALID_TOKEN(10002,"유효하지 않은 토큰입니다."),
 
     /* 500 internal server error */
     INTERNAL_ERROR(500, "Internal server error")
