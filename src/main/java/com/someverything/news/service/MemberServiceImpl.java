@@ -18,8 +18,19 @@ public class MemberServiceImpl implements MemberService {
     private final AppConfig appConfig;
 
     @Transactional
+    @Override
     public Member createMember(MemberDto.MemberRequest request){
         Member member = appConfig.strictModelMapper().map(request, Member.class);
         return memberRepository.save(member);
+    }
+
+    @Override
+    public Member getMember(Long memberId) {
+        return null;
+    }
+
+    @Override
+    public void deleteMember(Long memberId) {
+
     }
 }
