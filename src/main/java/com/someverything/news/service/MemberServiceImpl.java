@@ -30,7 +30,8 @@ public class MemberServiceImpl implements MemberService {
     public Member createMember(MemberDto.MemberRequest request){
         Member member = appConfig.strictModelMapper().map(request, Member.class);
 
-        // PasswordEncoder 넣기
+        String encodedPassword = appConfig.passwordEncoder().encode(request.getPassword());
+        member.setPassword(encodedPassword);
 
         memberRepository.save(member);
 
