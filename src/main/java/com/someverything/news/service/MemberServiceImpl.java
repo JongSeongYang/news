@@ -5,6 +5,8 @@ import com.someverything.news.domain.AuthCode;
 import com.someverything.news.domain.Member;
 import com.someverything.news.domain.MemberDetail;
 import com.someverything.news.dto.MemberDto;
+import com.someverything.news.global.exception.CustomResponseStatusException;
+import com.someverything.news.global.exception.ExceptionCode;
 import com.someverything.news.global.utils.JwtTokenProvider;
 import com.someverything.news.repository.AuthCodeRepository;
 import com.someverything.news.repository.MemberDetailRepository;
@@ -49,8 +51,20 @@ public class MemberServiceImpl implements MemberService {
         return null;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void deleteMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
 
+        // 얘는 어떻게 해야되지?
+        // 회원 상태 코드를 삭제 상태로 변경
+        member.setStatusCode("05"); // 삭제 상태 코드
+
+        // 회원 상세 정보 삭제
+        memberDetailRepository.deleteByMember(member);
+
+        // 회원 삭제
+        memberRepository.delete(member);
     }
 }
