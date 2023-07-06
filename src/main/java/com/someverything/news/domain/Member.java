@@ -84,4 +84,18 @@ public class Member extends BaseEntity {
     /** 약관 동의 항목 */
     private String termsAgreement;
 
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+        this.tokenRenewDt = LocalDateTime.now();
+    }
+    
+    public void setIsSmsReceive(String isSmsReceive) {
+        this.isSmsReceive = isSmsReceive;
+        this.smsReceiveDt = LocalDateTime.now();
+    }
+
+    public void setIsEmailReceive(String isEmailReceive) {
+        this.isEmailReceive = isEmailReceive;
+        this.emailReceiveDt = LocalDateTime.now();
+    }
 }

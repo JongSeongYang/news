@@ -32,6 +32,8 @@ public class MemberServiceImpl implements MemberService {
 
         String encodedPassword = appConfig.passwordEncoder().encode(request.getPassword());
         member.setPassword(encodedPassword);
+        member.setIsSmsReceive(request.getIsSmsReceive());
+        member.setIsEmailReceive(request.getIsEmailReceive());
 
         memberRepository.save(member);
 
