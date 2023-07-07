@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -48,14 +50,17 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member getMember(Long memberId) {
-        return null;
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        return optionalMember.orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
     }
+
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void deleteMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        Member member = optionalMember.orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
+
 
         // 얘는 어떻게 해야되지?
         // 회원 상태 코드를 삭제 상태로 변경
