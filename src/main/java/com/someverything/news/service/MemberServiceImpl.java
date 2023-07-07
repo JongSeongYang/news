@@ -54,13 +54,45 @@ public class MemberServiceImpl implements MemberService {
         return optionalMember.orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public Member updateMember(Long memberId, MemberDto.MemberRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
+
+        // 회원 정보 업데이트
+        member.setNickname(request.getNickname());
+        member.setIsEmailReceive(request.getIsEmailReceive());
+        member.setIsSmsReceive(request.getIsSmsReceive());
+
+        // 회원 상세 정보 업데이트
+        MemberDetail memberDetail = member.getMemberDetail();
+        MemberDetail updatedMemberDetail = appConfig.strictModelMapper().map(request, MemberDetail.class); // 기존의 MemberDetail 객체를 수정하게 되면 JPA에서 변경 감지(Dirty Checking)가 동작하지 않을 수 있음. 따라서  받아서 복사해주는 식으로 해야됨
+
+        // 업데이트된 내용을 기존의 MemberDetail에 복사
+        memberDetail.setMobileNumber(updatedMemberDetail.getMobileNumber());
+        // +@
+
+
+        // 회원 상세 정보와 회원 정보 간의 양방향 연관관계 설정
+        memberDetail.setMember(member);
+
+        // 업데이트된 회원 정보 저장
+        memberRepository.save(member);
+
+        // 업데이트된 회원 상세 정보 저장
+        memberDetailRepository.save(memberDetail);
+
+        return member;
+    }
+
+
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void deleteMember(Long memberId) {
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
-        Member member = optionalMember.orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
-
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
 
         // 얘는 어떻게 해야되지?
         // 회원 상태 코드를 삭제 상태로 변경

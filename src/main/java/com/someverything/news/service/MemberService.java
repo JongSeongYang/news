@@ -7,4 +7,5 @@ public interface MemberService {
     Member createMember(MemberDto.MemberRequest request);
     Member getMember(Long memberId);
     void deleteMember(Long memberId);
+    Member updateMember(Long memberId, MemberDto.MemberRequest request);
 }
