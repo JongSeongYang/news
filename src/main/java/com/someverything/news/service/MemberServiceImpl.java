@@ -62,6 +62,8 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
 
+        // 조건문 분기 (비밀번호가 null이 아니면 비밀번호 set)
+
         // 회원 정보 업데이트
         member.setNickname(request.getNickname());
         member.setIsEmailReceive(request.getIsEmailReceive());
@@ -124,5 +126,9 @@ public class MemberServiceImpl implements MemberService {
 
         // 회원 삭제
         memberRepository.delete(member);
+
+
+
+        // 상태 코드만 바꾸고 MemberQuit에 기록
     }
 }
