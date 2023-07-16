@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -110,7 +112,67 @@ public class MemberServiceImpl implements MemberService {
         return accessToken;
     }
 
-    // 비밀번호 변경 기능 추가
+    @Override
+    public void changePassword(Long memberId, String currentPassword, String newPassword) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
+
+        // 현재 비밀번호 일치 여부 확인
+        if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
+            throw new CustomResponseStatusException(ExceptionCode.INVALID_PASSWORD, ExceptionCode.INVALID_PASSWORD.getMessage());
+        }
+
+        // 비밀번호 변경
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        member.setPassword(encodedPassword);
+
+        // 비밀번호 변경 일시 업데이트
+        member.setPwdChangeDt(LocalDateTime.now());
+
+        // 회원 정보 저장
+        memberRepository.save(member);
+    }
+
+    @Override
+    public void initPassword(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
+
+        // 새로운 임시 비밀번호 생성
+        String newPassword = generateRandomPassword();
+
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(newPassword);
+
+        // 비밀번호 업데이트
+        member.setPassword(encodedPassword);
+        // 비밀번호 초기화 여부 업데이트
+        if ("Y".equals(member.getIsPwdInit())) {
+            member.setIsPwdInit("N");
+        }
+        // 비밀번호 변경 일시 업데이트
+        member.setPwdChangeDt(LocalDateTime.now());
+
+        // 회원 정보 저장
+        memberRepository.save(member);
+
+        // 초기화된 비밀번호 전송 등의 추가 로직 작성 가능
+    }
+
+    private String generateRandomPassword() {
+        // 임시 비밀번호 생성 로직 작성
+        // 적절한 방식으로 무작위 비밀번호를 생성하여 반환: 임시 비밀번호는 8자리의 영문 대소문자와 숫자로 구성된 랜덤 문자열
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < 8; i++) {
+            int index = random.nextInt(characters.length());
+            sb.append(characters.charAt(index));
+        }
+
+        return sb.toString();
+    }
 
 
     @Transactional(propagation = Propagation.REQUIRED)
