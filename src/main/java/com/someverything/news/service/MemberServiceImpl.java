@@ -190,7 +190,7 @@ public class MemberServiceImpl implements MemberService {
                 .quitReasonCode(quitReasonCode)
                 .quitContent(quitContent)
                 .rejoinDt(null) // 재가입 가능 일자는 null로 설정
-                .deleteDt(null) // 개인정보 파기 일자는 null로 설정
+                .deleteDt(LocalDateTime.now()) // 개인정보 파기 일자는 null로 설정
                 .build();
         memberQuitRepository.save(memberQuit);
 
