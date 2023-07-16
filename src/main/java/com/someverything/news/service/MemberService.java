@@ -8,5 +8,7 @@ public interface MemberService {
     Member getMember(Long memberId);
     Member updateMember(Long memberId, MemberDto.MemberRequest request);
     String login(String username, String password);
-    void deleteMember(Long memberId);
+    void deleteMember(Long memberId, String quitReasonCode, String quitContent);
+    void initPassword(Long memberId);
+    void changePassword(Long memberId, String currentPassword, String newPassword);
 }
