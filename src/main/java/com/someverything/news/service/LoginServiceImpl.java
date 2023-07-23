@@ -3,12 +3,13 @@ package com.someverything.news.service;
 import com.someverything.news.domain.Member;
 import com.someverything.news.global.exception.CustomResponseStatusException;
 import com.someverything.news.global.exception.ExceptionCode;
+import com.someverything.news.global.utils.HashUtils;
 import com.someverything.news.global.utils.JwtTokenProvider;
 import com.someverything.news.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -18,26 +19,33 @@ import java.time.LocalDateTime;
 public class LoginServiceImpl implements LoginService{
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final PasswordEncoder passwordEncoder;
+    private final HashUtils hashUtils;
 
+    @Transactional(noRollbackFor = CustomResponseStatusException.class)
     @Override
     public String login(String email, String password) {
         // 사용자 인증 및 회원 정보 조회
         Member member = memberRepository.findByMemberDetailEmail(email)
-                .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
-
-        // 비밀번호 일치 여부 확인
-        if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new CustomResponseStatusException(ExceptionCode.INVALID_PASSWORD, ExceptionCode.INVALID_PASSWORD.getMessage());
+                .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ""));
+        // 비밀번호 5회 이상 틀려서 잠긴 계정인지 확인
+        if (member.getStatusCode().equals("20")) {
+            throw new CustomResponseStatusException(ExceptionCode.LOCK_MEMBER, "");
         }
-
+        // 비밀번호 일치 여부 확인
+        if (!password.equals(hashUtils.toPasswordHash(member.getPassword()))) {
+            int wrongCnt = member.getLoginFailCnt();
+            member.setLoginFailCnt(wrongCnt + 1);
+            // 비밀번호 5회 이상 틀렸는지 확인
+            if (wrongCnt >= 5) {
+                member.setStatusCode("20");
+                throw new CustomResponseStatusException(ExceptionCode.WRONG_PASSWORD_OVER_FIVE, "");
+            }
+            throw new CustomResponseStatusException(ExceptionCode.INVALID_PASSWORD, "");
+        }
         // 로그인 성공 시 토큰 발급
         String accessToken = jwtTokenProvider.createToken(member.getId(), "access_token", "member", 30); // 30분 유효한 액세스 토큰 생성
-
-        // 토큰을 업데이트하고 저장
-        member.setAccessToken(accessToken);
-        memberRepository.save(member);
-
+        // 비밀번호 틀린 횟수 초기화
+        member.setLoginFailCnt(0);
         return accessToken;
     }
 
