@@ -33,7 +33,6 @@ public class MemberServiceImpl implements MemberService {
     private final MemberDetailRepository memberDetailRepository;
     private final MemberQuitRepository memberQuitRepository;
     private final AppConfig appConfig;
-    private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -95,22 +94,8 @@ public class MemberServiceImpl implements MemberService {
         return member;
     }
 
-    @Override
-    public String login(String email, String password) {
-        // 사용자 인증 및 회원 정보 조회
-        Member member = memberRepository.findByMemberDetailEmail(email)
-                .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
 
-        // 비밀번호 일치 여부 확인
-        if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new CustomResponseStatusException(ExceptionCode.INVALID_PASSWORD, ExceptionCode.INVALID_PASSWORD.getMessage());
-        }
 
-        // 로그인 성공 시 토큰 발급
-        String accessToken = jwtTokenProvider.createToken(member.getId(), "access_token", "member", 30); // 30분 유효한 액세스 토큰 생성
-
-        return accessToken;
-    }
 
     @Override
     public void changePassword(Long memberId, String currentPassword, String newPassword) {
