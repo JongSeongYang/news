@@ -27,7 +27,7 @@ public class SwaggerConfig {
                 .securityContexts(Arrays.asList(securityContext()))
                 .securitySchemes(Arrays.asList(apiKey()))
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.news.api"))
+                .apis(RequestHandlerSelectors.basePackage("com.someverything.news"))
                 .paths(PathSelectors.any())
                 .build();
     }

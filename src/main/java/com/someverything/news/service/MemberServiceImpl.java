@@ -8,6 +8,7 @@ import com.someverything.news.domain.MemberQuit;
 import com.someverything.news.dto.MemberDto;
 import com.someverything.news.global.exception.CustomResponseStatusException;
 import com.someverything.news.global.exception.ExceptionCode;
+import com.someverything.news.global.utils.HashUtils;
 import com.someverything.news.global.utils.JwtTokenProvider;
 import com.someverything.news.repository.AuthCodeRepository;
 import com.someverything.news.repository.MemberDetailRepository;
@@ -15,7 +16,6 @@ import com.someverything.news.repository.MemberQuitRepository;
 import com.someverything.news.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,14 +33,15 @@ public class MemberServiceImpl implements MemberService {
     private final MemberDetailRepository memberDetailRepository;
     private final MemberQuitRepository memberQuitRepository;
     private final AppConfig appConfig;
-    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final HashUtils hashUtils;
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public Member createMember(MemberDto.MemberRequest request){
         Member member = appConfig.strictModelMapper().map(request, Member.class);
 
-        String encodedPassword = appConfig.passwordEncoder().encode(request.getPassword());
+        String encodedPassword = hashUtils.toPasswordHash(request.getPassword());
         member.setPassword(encodedPassword);
         member.setIsSmsReceive(request.getIsSmsReceive());
         member.setIsEmailReceive(request.getIsEmailReceive());
@@ -94,8 +95,33 @@ public class MemberServiceImpl implements MemberService {
         return member;
     }
 
-
-
+    @Transactional(noRollbackFor = CustomResponseStatusException.class)
+    @Override
+    public String login(String email, String password) {
+        // 사용자 인증 및 회원 정보 조회
+        Member member = memberRepository.findByMemberDetailEmail(email)
+                .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ""));
+        // 비밀번호 5회 이상 틀려서 잠긴 계정인지 확인
+        if (member.getStatusCode().equals("20")) {
+            throw new CustomResponseStatusException(ExceptionCode.LOCK_MEMBER, "");
+        }
+        // 비밀번호 일치 여부 확인
+        if (!password.equals(hashUtils.toPasswordHash(member.getPassword()))) {
+            int wrongCnt = member.getLoginFailCnt();
+            member.setLoginFailCnt(wrongCnt + 1);
+            // 비밀번호 5회 이상 틀렸는지 확인
+            if (wrongCnt >= 5) {
+                member.setStatusCode("20");
+                throw new CustomResponseStatusException(ExceptionCode.WRONG_PASSWORD_OVER_FIVE, "");
+            }
+            throw new CustomResponseStatusException(ExceptionCode.INVALID_PASSWORD, "");
+        }
+        // 로그인 성공 시 토큰 발급
+        String accessToken = jwtTokenProvider.createToken(member.getId(), "access_token", "member", 30); // 30분 유효한 액세스 토큰 생성
+        // 비밀번호 틀린 횟수 초기화
+        member.setLoginFailCnt(0);
+        return accessToken;
+    }
 
     @Override
     public void changePassword(Long memberId, String currentPassword, String newPassword) {
@@ -103,12 +129,12 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ExceptionCode.MEMBER_NOT_FOUND.getMessage()));
 
         // 현재 비밀번호 일치 여부 확인
-        if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
+        if(!currentPassword.equals(hashUtils.toPasswordHash(member.getPassword()))) {
             throw new CustomResponseStatusException(ExceptionCode.INVALID_PASSWORD, ExceptionCode.INVALID_PASSWORD.getMessage());
         }
 
         // 비밀번호 변경
-        String encodedPassword = passwordEncoder.encode(newPassword);
+        String encodedPassword = hashUtils.toPasswordHash(newPassword);
         member.setPassword(encodedPassword);
 
         // 비밀번호 변경 일시 업데이트
@@ -127,7 +153,7 @@ public class MemberServiceImpl implements MemberService {
         String newPassword = generateRandomPassword();
 
         // 비밀번호 암호화
-        String encodedPassword = passwordEncoder.encode(newPassword);
+        String encodedPassword = hashUtils.toPasswordHash(newPassword);
 
         // 비밀번호 업데이트
         member.setPassword(encodedPassword);
