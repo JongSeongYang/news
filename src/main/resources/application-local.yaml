@@ -26,3 +26,5 @@ spring:
     url: jdbc:h2:~/test;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
     username: sa
+jwt:
+  key: F12GViFbqBay6Cnx/fWIBAYFv/vGZWUmz7aiBCuP8IVKEO9J4oX5V1yfbgKCbVDw4lKdIRz7llprMlEVJ/0IY8nYKUpCORXeBPF3Vaodn/4A73yk44hMUw0PU8tbdZgVG7kVp4sFowkESxW1n0+yThawORZRmuPkxDXPttyvCMxo3guoMH1MsWElIxdC7tKvz1Nx6dHpVBiboZ0bm0rVlrwU8oP5GacXvrSqb58eYdaP20c5WNOqVfSTNIiITHhBJ8JnhG5LpmmU4o7R4uyNDyEzfoGQe5jN/c9pvW+BnjtoFY7/IpWlsIYXkE+MEh421GWzBnIl2qYoOJiY5kFy

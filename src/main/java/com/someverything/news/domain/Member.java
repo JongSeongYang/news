@@ -54,7 +54,7 @@ public class Member extends BaseEntity {
     /** SMS 수신 동의/거부 일시 */
     private LocalDateTime smsReceiveDt;
 
-    /** 회원 상태 코드(01 : 정상, 02 : 비밀번호 오류 5회(대기?), 03 : 휴면, 04: 재가입, 05: ) */
+    /** 회원 상태 코드(10 : 정상, 20 : 비밀번호 오류 5회(대기?), 30 : 휴면, 40: 재가입, 50: 탈퇴?) */
     private String statusCode;
 
     /** 비밀번호 */
@@ -84,4 +84,18 @@ public class Member extends BaseEntity {
     /** 약관 동의 항목 */
     private String termsAgreement;
 
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+        this.tokenRenewDt = LocalDateTime.now();
+    }
+    
+    public void setIsSmsReceive(String isSmsReceive) {
+        this.isSmsReceive = isSmsReceive;
+        this.smsReceiveDt = LocalDateTime.now();
+    }
+
+    public void setIsEmailReceive(String isEmailReceive) {
+        this.isEmailReceive = isEmailReceive;
+        this.emailReceiveDt = LocalDateTime.now();
+    }
 }

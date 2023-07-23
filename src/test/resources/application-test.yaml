@@ -26,3 +26,5 @@ spring:
     url: jdbc:h2:~/test;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
     username: sa
+jwt:
+  key: F8C7B6618C55403F981920EFB6E2934EA9F7F55C4D94B06654ABE399651A7B63
