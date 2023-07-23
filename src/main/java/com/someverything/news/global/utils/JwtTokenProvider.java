@@ -41,7 +41,8 @@ public class JwtTokenProvider {
         map.put("type", type);
         map.put("scope", scope);
 
-        JwtBuilder builder = Jwts.builder().setHeader(headerMap)
+        JwtBuilder builder = Jwts.builder()
+                .setHeader(headerMap)
                 .setClaims(map)
                 .setExpiration(DateUtils.addDays(new Date(), expire))
                 .signWith(signingKey, SIGNATURE_ALG);
@@ -81,8 +82,8 @@ public class JwtTokenProvider {
 
         Map<String, String> map = new HashMap<>();
         map.put("id", claims.get("id", String.class));
-        map.put("name", claims.get("name", String.class));
-        map.put("email", claims.get("email", String.class));
+        map.put("scope", claims.get("scope", String.class));
+        map.put("type", claims.get("type", String.class));
         return map;
     }
 

@@ -11,9 +11,29 @@ public class AuthDto {
     @NoArgsConstructor
     @Data
     public static class AuthRequest {
-        private String nickname;
+        private Long id;
+        private String type;
+        private String scope;
+        private Integer expire;
     }
 
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class AuthResponse {
+        private String token;
+    }
 
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class tokenCheckResponse {
+        private Long id;
+        private String type;
+        private String scope;
+        private Integer expire;
+    }
 
 }

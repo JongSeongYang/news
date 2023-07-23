@@ -17,6 +17,7 @@ public enum ExceptionCode {
     INVALID_PASSWORD(10004, "비밀번호가 일치하지 않습니다."),
     WRONG_PASSWORD_OVER_FIVE(100005, "비밀번호를 5회 이상 틀렸습니다."),
     LOCK_MEMBER(100006, "잠긴 계정입니다."),
+    UNAUTHORIZED(100007, "권한이 없습니다."),
     /* 500 internal server error */
     INTERNAL_ERROR(500, "Internal server error")
     ;
