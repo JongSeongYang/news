@@ -95,34 +95,6 @@ public class MemberServiceImpl implements MemberService {
         return member;
     }
 
-    @Transactional(noRollbackFor = CustomResponseStatusException.class)
-    @Override
-    public String login(String email, String password) {
-        // 사용자 인증 및 회원 정보 조회
-        Member member = memberRepository.findByMemberDetailEmail(email)
-                .orElseThrow(() -> new CustomResponseStatusException(ExceptionCode.MEMBER_NOT_FOUND, ""));
-        // 비밀번호 5회 이상 틀려서 잠긴 계정인지 확인
-        if (member.getStatusCode().equals("20")) {
-            throw new CustomResponseStatusException(ExceptionCode.LOCK_MEMBER, "");
-        }
-        // 비밀번호 일치 여부 확인
-        if (!password.equals(hashUtils.toPasswordHash(member.getPassword()))) {
-            int wrongCnt = member.getLoginFailCnt();
-            member.setLoginFailCnt(wrongCnt + 1);
-            // 비밀번호 5회 이상 틀렸는지 확인
-            if (wrongCnt >= 5) {
-                member.setStatusCode("20");
-                throw new CustomResponseStatusException(ExceptionCode.WRONG_PASSWORD_OVER_FIVE, "");
-            }
-            throw new CustomResponseStatusException(ExceptionCode.INVALID_PASSWORD, "");
-        }
-        // 로그인 성공 시 토큰 발급
-        String accessToken = jwtTokenProvider.createToken(member.getId(), "access_token", "member", 30); // 30분 유효한 액세스 토큰 생성
-        // 비밀번호 틀린 횟수 초기화
-        member.setLoginFailCnt(0);
-        return accessToken;
-    }
-
     @Override
     public void changePassword(Long memberId, String currentPassword, String newPassword) {
         Member member = memberRepository.findById(memberId)
@@ -201,7 +173,7 @@ public class MemberServiceImpl implements MemberService {
                 .quitReasonCode(quitReasonCode)
                 .quitContent(quitContent)
                 .rejoinDt(null) // 재가입 가능 일자는 null로 설정
-                .deleteDt(null) // 개인정보 파기 일자는 null로 설정
+                .deleteDt(LocalDateTime.now()) // 개인정보 파기 일자는 null로 설정
                 .build();
         memberQuitRepository.save(memberQuit);
 
